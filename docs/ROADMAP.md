@@ -16,6 +16,15 @@
 
 See [preview launch instructions](../prototype/README.md). All original milestones below remain applicable; prototype checkmarks do not imply their completion.
 
+## Implementation update — 2026-10-25 (Theme Studio and connectivity groundwork)
+
+- [x] Add **custom, per-profile color theme presets** to the offline browser preview (save, select, and export/import structured JSON with color validation and size limits).
+- [x] Add host-neutral **Connection Recovery state model** distinguishing offline, network-only, authentication-required and online, with capped retry policy and offline access invariants.
+- [x] Add unit tests for the connectivity state model.
+- [ ] Theme Studio backgrounds, sounds, icon packs and controller-tested editing still outstanding.
+- [ ] Real Wi-Fi/Ethernet OS events, secure session restoration, deployed service and real console permissions still outstanding.
+- [ ] Manual desktop/browser hardware validation remains outstanding; do not treat this as completed M1.5 or M2.
+
 ## Delivery sequence and acceptance gates
 
 ### M0 — Baseline, architecture and traceability (October 2026)
