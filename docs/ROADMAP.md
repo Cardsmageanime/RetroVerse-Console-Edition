@@ -25,6 +25,14 @@ See [preview launch instructions](../prototype/README.md). All original mileston
 - [ ] Real Wi-Fi/Ethernet OS events, secure session restoration, deployed service and real console permissions still outstanding.
 - [ ] Manual desktop/browser hardware validation remains outstanding; do not treat this as completed M1.5 or M2.
 
+## Additional foundation work — 2026-10-25
+
+- [x] Theme Studio now exposes accent, background and panel color controls in its offline preview, including JSON theme import/export.
+- [x] Added JavaScript parser check for browser preview as a CI unit test (runtime UI behavior still requires manual testing).
+- [x] Added evidence-based Game Compatibility Center data model and tests; untested configurations cannot be advertised as verified.
+- [ ] No actual emulator/core/platform compatibility has yet been validated; registry contains no real support claims.
+- [ ] Manual browser/gamepad verification on Linux Mint is now the first useful owner-assisted acceptance gate.
+
 ## Delivery sequence and acceptance gates
 
 ### M0 — Baseline, architecture and traceability (October 2026)
