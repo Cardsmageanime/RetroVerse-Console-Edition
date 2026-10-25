@@ -29,7 +29,7 @@ jobs:
             Do not edit files, perform network requests, or assume unverified console support.
             Report concrete issues with file paths, severity, and proposed fixes.
           output-file: codex-review.md
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: codex-review
           path: codex-review.md
