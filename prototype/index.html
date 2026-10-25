@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RetroVerse Console Edition — Desktop Preview</title>
+<style>
+:root{--accent:#60e9f1;--bg:#10101f;--panel:#212137;--ink:#f8f8ff}*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 70% 0%,#343057,var(--bg) 58%);color:var(--ink);font:16px system-ui,sans-serif;min-height:100vh}
+button,input,select{font:inherit}button,select,input{border:1px solid #73758b;background:var(--panel);color:var(--ink);border-radius:10px;padding:10px}
+button{cursor:pointer}button:hover,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+header{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:22px 4vw;border-bottom:1px solid #ffffff35;flex-wrap:wrap}
+header strong{font-size:1.4rem;letter-spacing:.04em}#status{color:var(--accent)}
+nav{display:flex;gap:9px;flex-wrap:wrap;padding:20px 4vw}nav button[aria-current="page"]{background:var(--accent);color:#111324}
+main{max-width:1150px;margin:auto;padding:10px 4vw 70px}h1{font-size:clamp(1.8rem,4vw,3rem);margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px}.card{background:var(--panel);border:1px solid #ffffff27;border-radius:17px;padding:22px;min-height:125px}
+.muted{color:#c6c4d8}.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:14px 0}label{display:block;margin:12px 0}
+input[type=color]{width:80px;height:46px;padding:3px}input[type=file]{max-width:100%}.hidden{display:none}
+small{color:#c6c4d8} .pill{border:1px solid var(--accent);border-radius:30px;padding:4px 12px}
+footer{padding:25px 4vw;border-top:1px solid #ffffff35;color:#c6c4d8}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+</style></head>
+<body><header><strong>RETROVERSE <span style="color:var(--accent)">CONSOLE EDITION</span></strong>
+<div class="actions"><span class="pill" id="status" role="status">Offline</span><label for="profile-select">Profile <select id="profile-select"></select></label></div></header>
+<nav aria-label="Primary" id="nav"></nav><main id="main" tabindex="-1"></main>
+<footer>Desktop development preview · No console authorization or online server connection · Local-only data</footer>
+<script>
+"use strict";
+const STORE="retroverse-console-preview-v1";
+const THEMES={ "Neon Night":{accent:"#60e9f1",bg:"#10101f",panel:"#212137"},
+"Classic Retro":{accent:"#f8bd45",bg:"#191912",panel:"#343024"},
+"Anime Style":{accent:"#ff80c0",bg:"#1c1324",panel:"#38243f"},
+"Cyber Grid":{accent:"#46ffa8",bg:"#071d20",panel:"#143139"},
+"Forest Calm":{accent:"#a1dc92",bg:"#111e18",panel:"#293f31"},
+"Space Galaxy":{accent:"#b7a1ff",bg:"#100d2a",panel:"#30265a"},
+"Dark Mode":{accent:"#e5e5ed",bg:"#101014",panel:"#252529"},
+"Sunset Vibes":{accent:"#ffb17b",bg:"#27141b",panel:"#51303a"}};
+const pages=["Home","Game Library","Online","Lobbies","Friends","Spectator","Themes","Profiles","Settings"];
+function blankProfile(name){return {name,theme:"Neon Night",accent:null,games:[],musicShuffle:true};}
+function defaultState(){return {active:"Guest 1",profiles:{"Guest 1":blankProfile("Guest 1")}};}
+function load(){try{const s=JSON.parse(localStorage.getItem(STORE));if(s&&typeof s==="object"&&typeof s.active==="string"&&s.profiles&&s.profiles[s.active])return s;}catch{}return defaultState();}
+let state=load(), page="Home";
+const el=id=>document.getElementById(id);
+function save(){try{localStorage.setItem(STORE,JSON.stringify(state));}catch{announce("Local storage unavailable; preferences are temporary.");}}
+function announce(text){el("status").textContent=text;}
+function profile(){return state.profiles[state.active];}
+function safe(text){return String(text).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function theme(){const p=profile(),t=THEMES[p.theme]||THEMES["Neon Night"];return {...t,accent:p.accent||t.accent};}
+function applyTheme(){const t=theme();for(const [key,value] of Object.entries(t))document.documentElement.style.setProperty("--"+key,value);}
+function setPage(p){if(!pages.includes(p))return;page=p;render();el("main").focus();}
+function profiles(){const select=el("profile-select");select.replaceChildren();for(const name of Object.keys(state.profiles)){const o=document.createElement("option");o.value=name;o.textContent=name;select.append(o);}select.value=state.active;}
+function card(title,description){return '<article class="card"><h2>'+safe(title)+'</h2><p class="muted">'+safe(description)+'</p></article>';}
+function render(){
+applyTheme();profiles();const nav=el("nav");nav.replaceChildren();
+for(const p of pages){const b=document.createElement("button");b.textContent=p;b.setAttribute("aria-current",p===page?"page":"false");b.onclick=()=>setPage(p);nav.append(b);}
+const p=profile(), main=el("main");let html='<h1>'+safe(page)+'</h1>';
+if(page==="Home") html+='<p>Welcome, '+safe(state.active)+'. Console Edition works offline in this desktop preview.</p><div class="grid">'+card("Offline gaming","Explore permitted local game metadata; emulator launching is not yet implemented.")+card("Your library",p.games.length+" locally imported game entries.")+card("Customization","Eight presets and a per-profile accent color.")+card("RetroVerse Online","Planned secure accounts, chat and compatible multiplayer; not yet connected.")+'</div>';
+if(page==="Game Library")html+='<p>Import a local JSON game catalog. No files are uploaded, scanned automatically or executed.</p><label>Catalog JSON <input id="catalog" type="file" accept=".json,application/json"></label><p><small>Format: {"games":[{"title":"Example","system":"SNES"}]}. Maximum 500 entries, 1 MB.</small></p><div class="grid">'+(p.games.length?p.games.map(g=>card(g.title,g.system)).join(""):card("No games","Import an explicitly selected local catalog to preview game cards."))+'</div><div class="actions"><button id="clear-games">Clear this profile’s catalog</button></div>';
+if(page==="Themes")html+='<p>RetroVerse Theme Studio — local theme presets and individual accent preferences.</p><label>Theme preset <select id="theme-select">'+Object.keys(THEMES).map(t=>'<option value="'+safe(t)+'" '+(p.theme===t?'selected':'')+'>'+safe(t)+'</option>').join("")+'</select></label><label>Accent color <input id="accent" type="color" value="'+safe(theme().accent)+'"></label><div class="actions"><button id="reset-accent">Use preset accent</button></div><p><small>Per-profile theme saved locally. Backgrounds, icon packs, theme export and custom sounds are planned.</small></p>';
+if(page==="Profiles")html+='<p>Guest profiles are local-only and do not require an account.</p><div class="grid">'+Object.keys(state.profiles).map(name=>card(name,name===state.active?"Current profile":"Available local profile")).join("")+'</div><div class="actions"><label>New guest name <input id="new-profile" maxlength="32" placeholder="Guest 2"></label><button id="add-profile">Add guest</button><button id="delete-profile">Delete active guest</button></div><p><small>Deleting the active guest removes its local catalog and preferences. At least one guest is retained.</small></p>';
+if(page==="Settings")html+='<label><input id="shuffle" type="checkbox" '+(p.musicShuffle?'checked':'')+'> Enable music shuffle preference</label><p class="muted">Audio playback, local saves and controller mappings are future modules.</p><button id="clear-data">Reset all local preview data</button>';
+if(["Online","Lobbies","Friends","Spectator"].includes(page))html+='<p class="pill">Offline preview — service unavailable by design</p><div class="grid">'+(page==="Lobbies"?["Public Online Lobby","Friends Lobby","Spectator Lobby","Creator/Host Lobby"].map(n=>card(n,"Planned: authenticated room membership and server-enforced permissions.")).join(""):card(page,"Planned: requires authenticated RetroVerse Online, TLS and approved platform APIs."))+'</div>';
+main.innerHTML=html;
+const on=(id,event,fn)=>{const x=el(id);if(x)x.addEventListener(event,fn);};
+on("theme-select","change",e=>{profile().theme=e.target.value;profile().accent=null;save();render();});
+on("accent","input",e=>{profile().accent=e.target.value;save();applyTheme();});
+on("reset-accent","click",()=>{profile().accent=null;save();render();});
+on("shuffle","change",e=>{profile().musicShuffle=e.target.checked;save();});
+on("add-profile","click",()=>{const name=el("new-profile").value.trim();if(!name||name.length>32||Object.prototype.hasOwnProperty.call(state.profiles,name)||Object.keys(state.profiles).length>=8){alert("Use a unique name (1–32 characters; maximum 8 profiles).");return;}state.profiles[name]=blankProfile(name);state.active=name;save();render();});
+on("delete-profile","click",()=>{if(Object.keys(state.profiles).length<=1){alert("Keep at least one guest profile.");return;}if(confirm("Delete this local guest and its preferences?")){delete state.profiles[state.active];state.active=Object.keys(state.profiles)[0];save();render();}});
+on("clear-games","click",()=>{profile().games=[];save();render();});
+on("clear-data","click",()=>{if(confirm("Reset all local preview settings?")){state=defaultState();save();render();}});
+on("catalog","change",async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>1048576){alert("Catalog exceeds 1 MB.");return;}try{const data=JSON.parse(await f.text());if(!Array.isArray(data.games)||data.games.length>500)throw Error("Invalid game list");const games=data.games.map(x=>{if(!x||typeof x.title!=="string"||typeof x.system!=="string"||!x.title.trim()||x.title.length>100||x.system.length>50)throw Error("Invalid entry");return {title:x.title,system:x.system};});profile().games=games;save();render();}catch{alert("Invalid game catalog. Expected games with title and system.");}});
+}
+el("profile-select").addEventListener("change",e=>{state.active=e.target.value;save();render();});
+// Basic controller-first page navigation: shoulder buttons switch tabs; D-pad can move focus.
+let lastButtons="";
+function gamepadFrame(){const pads=navigator.getGamepads?.()||[];const pad=[...pads].find(Boolean);if(pad){const pressed=pad.buttons.map((b,i)=>b.pressed?i:-1).filter(i=>i>=0).join(",");if(pressed!==lastButtons){const b=pad.buttons;if(b[4]?.pressed||b[5]?.pressed){setPage(pages[(pages.indexOf(page)+(b[5]?.pressed?1:-1)+pages.length)%pages.length]);}
+else if(b[12]?.pressed||b[13]?.pressed){const targets=[...document.querySelectorAll('button,input,select')].filter(x=>x.offsetParent!==null);const at=targets.indexOf(document.activeElement);targets[(at+(b[13]?.pressed?1:-1)+targets.length)%targets.length]?.focus();}
+else if(b[0]?.pressed && document.activeElement instanceof HTMLElement)document.activeElement.click();
+}lastButtons=pressed;}requestAnimationFrame(gamepadFrame);}
+render();announce("Offline preview");requestAnimationFrame(gamepadFrame);
+</script></body></html>
