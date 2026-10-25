@@ -4,6 +4,12 @@
 
 RetroVerse Console Edition is a separate cross-platform application track inspired by the original [RetroVerse Systems Edition](https://github.com/Cardsmageanime/RetroVerse). It targets officially authorized console environments **without** jailbreaks, exploits, modified firmware, or a required Developer Mode in the retail experience. PlayStation, Nintendo and Xbox retail compatibility **is not currently established**; official SDK, licensing and distribution approval are prerequisites.
 
+## Runnable desktop preview (0.2.0-alpha)
+
+A first **offline browser-based Console Edition prototype** is available at [prototype/index.html](prototype/index.html). Download the repository or the file and open it in a modern browser on Linux Mint/Windows. It includes guest profiles, theme presets, a local JSON game-catalog viewer, basic gamepad navigation and offline placeholder lobby screens.
+
+Read [preview setup, controls and limitations](prototype/README.md). It is not an emulator, online service, or authorized retail console app; these remain roadmap work.
+
 ## Features we are building
 - Controller-first fullscreen home screen, Game Library, Profiles, Friends, Online Play, Spectator, Themes and Settings.
 - Eight established theme presets, customizable colors/backgrounds/icons/sounds, and optional music shuffle.
