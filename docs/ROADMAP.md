@@ -1,38 +1,83 @@
-# Console Edition roadmap
+# RetroVerse Console Edition roadmap
 
-## M0: baseline and traceability
-- [x] Keep separate repository.
-- [x] Record source components, product rules and supported/unsupported distinctions.
-- [x] Create platform-neutral mode/lobby policy model and tests.
-- [ ] Audit licenses of original code, RetroArch and each core before redistribution.
+**Status:** Planning and portable policy foundation (v0.1.0). This is a separate application project from RetroVerse Systems Edition's ARM bootable OS. Dates are targets, not guarantees; retail console support depends on manufacturer authorization.
 
-## M1: functional Linux desktop development harness
-- [ ] Port original Neon Showcase navigation to dedicated Console Edition UI.
-- [ ] Controller-based navigation, focus and accessible display scaling.
-- [ ] Local permitted-game library and metadata workflow.
-- [ ] Theme presets, UI colors, backgrounds, sound and music settings.
-- [ ] Persistent user settings and local save system.
-- [ ] Unit and integration tests using Linux Mint.
+## Delivery sequence and acceptance gates
 
-## M2: connectivity / social prototype
-- [ ] OS connectivity observer (Wi-Fi or Ethernet through host APIs).
-- [ ] Offline-first state transitions, reconnect and graceful degradation.
-- [ ] Four lobby UIs and room membership/permissions.
-- [ ] Authenticated TLS service, chat, friends, invitations and moderation.
-- [ ] Server-side enforcement of ban, permissions and no-cheat multiplayer policy.
-- [ ] Spectator data path with read-only permission checks.
-- [ ] Compatibility testing; netplay integration only after real gameplay tests.
+### M0 — Baseline, architecture and traceability (October 2026)
+- [x] Maintain separate repository from Systems Edition.
+- [x] Document source components, feature contracts and platform limitations.
+- [x] Create platform-neutral mode/lobby policy model and initial tests.
+- [ ] Audit licensing for original RetroVerse code, RetroArch, Libretro cores and distributed assets.
+- **Gate:** a traceable feature inventory, clear separation of OS-specific code, and green baseline tests.
 
-## M3: emulator + packaging
-- [ ] Document licenses, core compatibility and game content rights.
-- [ ] Legal local emulator adapter where permitted.
-- [ ] Update/save preservation, runtime failure recovery, release signing pipeline.
+### M1 — Offline desktop foundation and guest profiles (November–December 2026)
+- [ ] Port original Neon Showcase concepts into an independent Console Edition desktop app, starting on Linux Mint.
+- [ ] Implement controller-first Home, Game Library, Profiles, Themes, Settings and placeholder lobby navigation, including focus and display scaling.
+- [ ] Support explicit user-approved game directories, local metadata/artwork, favorites and library search; obey host filesystem permissions.
+- [ ] Add persistent per-profile settings and local saves.
+- [ ] **Offline Guest Profiles:** allow multiple local guest profiles, separate controller mapping, preferences and saves without accounts; define selection, switching and deletion behavior.
+- [ ] Keep offline startup fully functional without networking; available solo play remains playable and local multiplayer blocks cheats.
+- [ ] Unit/integration tests on Linux Mint.
+- **Gate:** disconnect the machine, start Console Edition, switch guest profiles and navigate/game-library browse using a controller, with per-profile settings intact.
 
-## M4: official consoles (conditional)
-- [ ] Seek official PlayStation partner/SDK authorization.
-- [ ] Seek official Nintendo developer/SDK authorization.
-- [ ] Seek official Xbox platform approval and retail distribution route.
-- [ ] Implement isolated platform adapters only within authorized APIs.
-- [ ] Validate storage, network, input and store compliance on each supported device.
+### M1.5 — RetroVerse Theme Studio (December 2026–January 2027)
+- [ ] Preserve theme presets and original visual identity while giving Console Edition its own interface.
+- [ ] **RetroVerse Theme Studio:** create, preview, save, duplicate, export/import permitted theme configurations with color palettes, local backgrounds, UI accents, icons, sound effects and per-profile preferences.
+- [ ] Include eight proposed presets: Classic Retro, Neon Night, Anime Style, Cyber Grid, Forest Calm, Space Galaxy, Dark Mode and Sunset Vibes; names are planning proposals, not shipped assets.
+- [ ] Provide music shuffle/continuous playback and safe defaults for missing/incompatible content.
+- [ ] Respect copyright, accessibility, platform asset rules, performance constraints and sandbox permissions.
+- **Gate:** controller-only theme creation, save/reload, per-profile isolation and offline theme operation.
 
-No public release or compatibility claims until tests and authorization pass.
+### M2 — Connectivity foundation and Connection Recovery (January–February 2027)
+- [ ] Observe host OS network availability (Wi-Fi/Ethernet), without custom network drivers, firmware modifications or platform restriction bypasses.
+- [ ] **Connection Recovery:** distinguish local connection, reachable internet, authenticated RetroVerse service and disconnected/error states.
+- [ ] Preserve offline library/themes/saves when online services are unavailable; avoid forced sign-in for local use.
+- [ ] Implement bounded retry/backoff, connectivity-change responses, secure session resume where tokens and server policy permit, explicit logout and no misleading 'online' indicators.
+- [ ] Test Wi-Fi/Ethernet switching, cable unplug/replug, server outages, sleep/wake, token expiry and intermittent connectivity.
+- **Gate:** network disruptions never break local mode; recovery neither exposes credentials nor silently bypasses login.
+
+### M3 — Authenticated RetroVerse Online and lobbies (February–April 2027)
+- [ ] Implement authenticated, TLS-protected service with secure tokens, rate limits, abuse controls, privacy and moderation.
+- [ ] Implement Friends, presence, invitations, room creation/join/leave, and chat.
+- [ ] Preserve all four lobby classes: **Public Online Lobby**, **Friends Lobby**, **Spectator Lobby**, **Creator/Host Lobby**; private invite rooms default private.
+- [ ] Enforce room roles and permissions on the server; spectators are read-only and cannot inject game inputs.
+- [ ] Enforce cheat prohibition in all multiplayer sessions, including local/private sessions, before joining/launching; online policy is server authoritative.
+- [ ] **Universal Room Browser:** browse/search/filter compatible public rooms, permitted friends' rooms and spectator-enabled rooms; show accurate game/platform/core-version compatibility, access/privacy, player/spectator counts, and join eligibility.
+- [ ] Graceful online/offline transitions integrate with M2 connectivity recovery.
+- **Gate:** authenticated test clients create, discover and join authorized rooms; unauthorized users cannot enter private rooms or elevate spectator rights; recovery and moderation tests pass.
+
+### M4 — Game Compatibility Center and compatible gameplay (April–July 2027)
+- [ ] **Game Compatibility Center:** maintain a verified matrix of host platform, app version, emulator/core version, game/content identifier, controller capability, network mode and tested status.
+- [ ] Present only verified support states (e.g., tested compatible, tested incompatible, untested); preserve evidence and last-tested version/date.
+- [ ] Never infer working compatibility solely from CPU architecture, console branding, matching extensions or another emulator's claim.
+- [ ] Add legally usable emulator adapters where platform authorization and upstream license permit.
+- [ ] Prototype compatible multiplayer synchronization and spectator viewing; no claims of rollback or cross-emulator play until proved.
+- [ ] Test latency, disconnect/rejoin, role enforcement, input integrity, saves and platform/core interoperability.
+- **Gate:** a documented reproducible compatibility suite and real two-client session tests; unsupported combinations are clearly shown as such.
+
+### M5 — Packaging, stability and safe updates (August–October 2027)
+- [ ] Verify licenses, content distribution rights and assets.
+- [ ] Preserve profiles, saves, theme configurations and library metadata through app upgrades where platform APIs permit.
+- [ ] Add crash reporting with consent, accessibility/performance testing, backup/restore and release checks.
+- [ ] Keep application updates distinct from console firmware updates; never promise automatic compatibility with unsupported console firmware.
+- **Gate:** reproducible desktop package, clean-install/upgrade tests and no save-loss regressions.
+
+### M6 — Manufacturer-authorized console tracks (late 2027–2028; conditional)
+- [ ] Seek Sony/PlayStation partner and SDK authorization.
+- [ ] Seek Nintendo developer and SDK authorization.
+- [ ] Seek Microsoft/Xbox authorized retail distribution and SDK route (not mandatory Developer Mode in retail experience).
+- [ ] Build isolated platform adapters only using permitted SDKs, APIs, network/storage paths and signed distribution.
+- [ ] Test platform-specific restrictions on themes, storage, networking, emulation, accounts, chat and updates.
+- [ ] Publish only on platforms explicitly approved and tested; mark others unsupported.
+- **Gate:** documented permissions, certification/compliance and successful hardware tests per platform.
+
+## Non-negotiable requirements
+- No jailbreaks, exploits, bootloader modification, custom console firmware, or unauthorized USB boot.
+- Console Edition is an application, **not** the ARM USB/SD operating system.
+- Offline use requires no RetroVerse account or internet for eligible local content.
+- Online services depend on network access, authentication, server availability and host-platform policy; either Wi-Fi or Ethernet may transport permitted traffic.
+- Multiplayer cheats prohibited without exceptions; spectators have no game-input authority.
+- Original Systems Edition's kernel, bootloaders, DTBs, Versus Tree, root filesystem and hardware-boot tests remain in its repository unchanged.
+- The current Systems Edition UI, local chat service and library scanner are **prototypes**, not production console functionality.
+- No public console availability or cross-platform netplay claims before authorization and real testing.
