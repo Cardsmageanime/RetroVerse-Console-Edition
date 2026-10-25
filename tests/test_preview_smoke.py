@@ -36,8 +36,7 @@ class PreviewSmokeTests(unittest.TestCase):
             self.assertIn(text, HTML)
 
     def test_local_catalog_safety_gates(self):
-        for text in ["1048576", "data.games.length>500", "safe(g.title)",
-                     "safe(g.system)", "f.text()", "read-only"]:
+        for text in ["1048576", "data.games.length>500", "card(g.title,g.system)", "f.text()", "read-only"]:
             # HTML currently does not claim actual automatic scanning.
             if text == "read-only":
                 continue
