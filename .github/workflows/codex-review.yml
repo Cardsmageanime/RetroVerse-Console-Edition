@@ -1,0 +1,36 @@
+# Optional, manually triggered only; never starts paid API usage automatically.
+# Configure OPENAI_API_KEY as a repository Actions secret before running.
+name: Optional Codex Code Review
+on:
+  workflow_dispatch:
+    inputs:
+      review_focus:
+        description: Area of code to review (not executable commands)
+        type: choice
+        options: [prototype, core, tests, documentation]
+        required: true
+        default: core
+permissions:
+  contents: read
+jobs:
+  codex-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ':workspace'
+          prompt: |
+            Read-only security and correctness review of the RetroVerse Console Edition repository.
+            Focus on ${{ inputs.review_focus }}.
+            Do not edit files, perform network requests, or assume unverified console support.
+            Report concrete issues with file paths, severity, and proposed fixes.
+          output-file: codex-review.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codex-review
+          path: codex-review.md
+          retention-days: 14
