@@ -2,6 +2,20 @@
 
 **Status:** Planning and portable policy foundation (v0.1.0). This is a separate application project from RetroVerse Systems Edition's ARM bootable OS. Dates are targets, not guarantees; retail console support depends on manufacturer authorization.
 
+## Implementation update — 2026-10-25 (Desktop Preview 0.2.0-alpha)
+
+- [x] Added a **dependency-free offline browser preview** at [prototype/index.html](../prototype/index.html), preserving distinct Console Edition identity and keeping Systems Edition untouched.
+- [x] Added first-pass page navigation for Home, Game Library, Online, Lobbies, Friends, Spectator, Themes, Profiles and Settings.
+- [x] Added **prototype** guest profiles (up to eight), browser-local preference persistence, eight theme presets and per-profile accent customization.
+- [x] Added **prototype** user-selected, read-only JSON catalog import; no ROM access, scanner or emulator launch.
+- [x] Added **preview-only** representations of all four lobbies, explicitly not connected to a server.
+- [x] Added basic Gamepad API navigation and static smoke tests (not yet verified on user hardware).
+- [ ] Manual browser and controller acceptance tests, accessibility review and automated JavaScript runtime tests are still needed.
+- [ ] Full Theme Studio editor/export, real game scanning, music, controller mapping and robust on-disk guest profiles are **not complete**.
+- [ ] M2–M6 online services, secure authentication, multiplayer, compatibility matrix and official console ports remain outstanding.
+
+See [preview launch instructions](../prototype/README.md). All original milestones below remain applicable; prototype checkmarks do not imply their completion.
+
 ## Delivery sequence and acceptance gates
 
 ### M0 — Baseline, architecture and traceability (October 2026)
